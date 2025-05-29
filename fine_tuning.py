@@ -24,7 +24,7 @@ from IPython.display import HTML
 from embedding import plot_embedding
 from helper_functions import plot_results
 from device import device
-from test_accuracy import test_accuracy
+from test_accuracy import test_accuracy_and_conf_matrix
 from utils import Save
 
 
@@ -41,6 +41,7 @@ def fine_tuning(model, path, num_epochs, batch_size=1000, img_size=256):
         transforms.ToTensor(),  # Converts PIL Image to Tensor
         transforms.Normalize((0.5,), (0.5,))
     ])
+
     train_dataset = datasets.ImageFolder('./data/train', transform=training_transform)
     val_dataset = datasets.ImageFolder('./data/val', transform=basis_transform)
     test_dataset = datasets.ImageFolder('./data/test', transform=basis_transform)
@@ -49,6 +50,10 @@ def fine_tuning(model, path, num_epochs, batch_size=1000, img_size=256):
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
     num_classes = len(train_dataset.classes)
+
+    test_dataset = datasets.ImageFolder('./data/test', transform=basis_transform)
+    test_loader = DataLoader(test_dataset, batch_size=512, shuffle=False, num_workers=4)
+    plot_embedding(model, test_loader, test_dataset, path, 'tsne_test_embeddings_before_linear_layer.png')
 
     model.pre_training = False
     for param in model.encoder.parameters():
@@ -148,6 +153,6 @@ def fine_tuning(model, path, num_epochs, batch_size=1000, img_size=256):
 
     plot_results(train_losses, val_losses, training_accuracies, val_accuracies, path)
     print("validation accuracy: {}".format(best_model[0]))
-    test_accuracy(best_model[1], test_loader)
+    test_accuracy_and_conf_matrix(best_model[1], test_loader, test_dataset, path)
     plot_embedding(best_model[1], test_loader, test_dataset, path)
     return best_model[1]

@@ -29,7 +29,7 @@ from models.SimCLR import SimCLRModel
 from models.SupConModel import SupConModel
 from pre_training import pre_training
 from device import device
-from test_accuracy import test_accuracy
+from test_accuracy import test_accuracy_and_conf_matrix
 
 print(device)
 
@@ -215,7 +215,7 @@ plt.savefig(os.path.join("plot_results", 'compare_schedulers.png'))
 plt.show()
 
 print("validation accuracy: {}".format(result["best_model"][0]))
-test_accuracy(model_per_size[256]["best_model"][1], test_loader)
+test_accuracy_and_conf_matrix(model_per_size[256]["best_model"][1], test_loader, test_dataset, "plot_results")
 
 end = time.time()
 print(f"time elapse: {end - startl}")
@@ -268,7 +268,7 @@ print(f"time elapse: {end - startl}")
 startl = time.time()
 
 result = pre_training(SimCLRModel, "saves/SimCLRModel/conf2/pre_train", 800, 128)
-fine_tuevaluationning(result["best_model"], "saves/SimCLRModel/conf2/fine_tuning/1", 45, 1000, 128)
+fine_tuning(result["best_model"], "saves/SimCLRModel/conf2/fine_tuning/1", 45, 1000, 128)
 
 end = time.time()
 print(f"time elapse: {end - startl}")

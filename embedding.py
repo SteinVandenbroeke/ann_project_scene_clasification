@@ -9,7 +9,7 @@ import os
 from device import device
 
 
-def plot_embedding(model, test_loader, test_dataset, path):
+def plot_embedding(model, test_loader, test_dataset, path, name='tsne_test_embeddings.png'):
     # Extract features from penultimate layer
     features = []
     labels_list = []
@@ -47,5 +47,5 @@ def plot_embedding(model, test_loader, test_dataset, path):
     plt.ylabel("Component 2")
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(os.path.join(path, 'tsne_test_embeddings.png'))
+    plt.savefig(os.path.join(path, name))
     plt.show()
